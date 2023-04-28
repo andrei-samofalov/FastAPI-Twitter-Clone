@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "fastapi-twitter"
+version = "0.1.0"
+description = ""
+authors = ["andrei-samofalov <andrei.e.samofalov@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fastapi_twitter"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.95.1"
+uvicorn = "^0.22.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
