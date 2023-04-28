@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  server:
+    build: src/server
+    container_name: nginx
+    restart: always
+    env_file: .env
+    networks:
+      - twitter
+    depends_on:
+      - api
+    ports:
+      - "80:5000"
+    volumes:
+      - ./src/server/static:/usr/share/nginx/html/
+
+  api:
+    build: src
+    ports:
+      - "5050:5050"
+    restart: always
+    env_file: .env
+    container_name: api
+    networks:
+      - twitter
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app
+
+  db:
+    image: postgres:15.2
+    ports:
+      - "5432:5432"
+    networks:
+      - twitter
+    restart: always
+    env_file: .env
+    container_name: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./src/database/pgdata:/var/lib/postgresql/data
+
+# TODO redis, celery, EFK, Prometheus-Grafana
+
+volumes:
+  pgdata:
+
+networks:
+  twitter:
+    driver: bridge
