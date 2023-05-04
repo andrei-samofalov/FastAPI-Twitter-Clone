@@ -16,7 +16,10 @@ services:
       - ./src/server/static:/usr/share/nginx/html/
 
   api:
-    build: src
+
+    build:
+      context: .
+      dockerfile: src/Dockerfile
     ports:
       - "5050:5050"
     restart: always
@@ -28,7 +31,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./src:/app
+      - ./src/database/migrations:/app/database/migrations
 
   db:
     image: postgres:15.2

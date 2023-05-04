@@ -4,17 +4,18 @@ version = "0.1.0"
 description = ""
 authors = ["andrei-samofalov <andrei.e.samofalov@gmail.com>"]
 readme = "README.md"
-packages = [{include = "src"}]
+#packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.95.1"}
 uvicorn = "^0.22.0"
 alembic = "^1.10.4"
-sqlalchemy = "^2.0.11"
 asyncpg = "^0.27.0"
 loguru = "^0.7.0"
 python-dotenv = "^1.0.0"
+sqlalchemy = "2.0.10"
+pydocstyle = "^6.3.0"
 
 
 [tool.poetry.group.dev.dependencies]

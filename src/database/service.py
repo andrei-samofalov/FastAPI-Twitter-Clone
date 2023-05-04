@@ -33,11 +33,11 @@ class Dal:
         return obj
 
     async def get_one(self, model: Model, idx: int) -> Model | None:
-        """return model object with given idx if it is in database"""
+        """Return model object with given idx if it is in database."""
         return await self._check_obj(model, idx)
 
     async def add_one(self, model: Model, schema: Schema) -> Model:
-        """add given data to database, return new object"""
+        """Add given data to database, return new object."""
         new_obj = await self._transform_schema_to_object(model, schema)
         async with self._session.begin():
             self._session.add(new_obj)

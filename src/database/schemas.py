@@ -15,7 +15,7 @@ class FollowUserOut(UserIn):
 
 
 class UserOut(FollowUserOut):
-    result: True
+    result: bool = True
     followers: Optional[list[FollowUserOut]] = []
     following: Optional[list[FollowUserOut]] = []
 

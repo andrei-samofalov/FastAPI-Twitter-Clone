@@ -2,7 +2,13 @@
 This module contains routes for router `tweets`
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.init_db import db
+from database.models import Tweet
+from database.schemas import TweetIn, TweetOut
+from database.service import Dal
 
 router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 
@@ -11,7 +17,7 @@ router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 async def get_tweets():
     """get all tweets"""
     return {
-        "result": 'True',
+        "result": True,
         "tweets": [
             {
                 "id": 1,
@@ -33,10 +39,10 @@ async def get_tweets():
     }
 
 
-@router.post('/')
-async def add_tweet():
+@router.post('/', response_model=TweetOut)
+async def add_tweet(tweet: TweetIn, sess: AsyncSession = Depends(db)):
     """post new tweet"""
-    pass
+    return await Dal(sess).add_one(Tweet, tweet)
 
 
 @router.delete('/{id}')
