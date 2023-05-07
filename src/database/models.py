@@ -5,48 +5,76 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
-    __abstract__ = True
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    pass
 
 
-follow = Table(
+follows = Table(
     "follows",
     Base.metadata,
-    Column("follower", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("followee", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("follower_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("following_id", Integer, ForeignKey("users.id"), primary_key=True),
 )
 
 
 class User(Base):
     __tablename__ = "users"
 
-    name: Mapped[str]
-    followers: Mapped['User'] = relationship(
-        secondary='follows',
-        primaryjoin=id == follow.c.follower,
-        secondaryjoin=id == follow.c.followee,
-        backref="followee",
+    id: Mapped[int] = mapped_column(
+        primary_key=True, autoincrement=True, index=True
     )
-    following: Mapped['User'] = relationship(
-        secondary='follows',
-        primaryjoin=id == follow.c.followee,
-        secondaryjoin=id == follow.c.follower,
-        backref="follower",
+    name: Mapped[str] = mapped_column(nullable=False, unique=True, index=True)
+    tweets: Mapped[list['Tweet']] = relationship(
+        back_populates='author', lazy='selectin', cascade='all, delete-orphan'
     )
+    api_key: Mapped[str] = mapped_column()
+    following = relationship(
+        'User',
+        secondary=follows,
+        primaryjoin=id == follows.c.follower_id,
+        secondaryjoin=id == follows.c.following_id,
+        backref="followers",
+        lazy='selectin',
+    )
+
+    def __repr__(self):
+        return f'User(id={self.id}, name={self.name})'
 
 
 class Tweet(Base):
     __tablename__ = 'tweets'
 
-    tweet_data: Mapped[str]
-    likes: Mapped[int]
-    user_id: Mapped[int] = relationship(ForeignKey('users.id'))
+    id: Mapped[int] = mapped_column(
+        primary_key=True, autoincrement=True, index=True
+    )
+    content: Mapped[str]
+    likes: Mapped[list['TweetLike']] = relationship(
+        back_populates='tweet', lazy='selectin'
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
     tweet_media_ids: Mapped[list['TweetMedia']] = relationship()
+    author: Mapped[User] = relationship(back_populates='tweets', lazy='selectin')
 
 
 class TweetMedia(Base):
     __tablename__ = 'media'
 
+    id: Mapped[int] = mapped_column(
+        primary_key=True, autoincrement=True, index=True
+    )
     url: Mapped[str]
     tweet_id: Mapped[int] = mapped_column(ForeignKey('tweets.id'))
+
+
+class TweetLike(Base):
+    __tablename__ = 'tweetlikes'
+
+    tweet_id: Mapped[int] = mapped_column(
+        ForeignKey('tweets.id'), primary_key=True
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey('users.id'), primary_key=True
+    )
+
+    tweet: Mapped[Tweet] = relationship()
+    user: Mapped[User] = relationship()

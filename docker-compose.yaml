@@ -1,28 +1,30 @@
+# whole project docker compose
+
 version: '3.9'
 
 services:
   server:
     build: src/server
     container_name: nginx
-    restart: always
+    restart: on-failure
     env_file: .env
     networks:
       - twitter
     depends_on:
-      - api
+      api:
+        condition: service_started
     ports:
       - "80:5000"
     volumes:
       - ./src/server/static:/usr/share/nginx/html/
 
   api:
-
     build:
       context: .
       dockerfile: src/Dockerfile
     ports:
-      - "5050:5050"
-    restart: always
+      - "5000:5000"
+    restart: on-failure
     env_file: .env
     container_name: api
     networks:
@@ -32,6 +34,27 @@ services:
         condition: service_healthy
     volumes:
       - ./src/database/migrations:/app/database/migrations
+      - src:/app
+    entrypoint:
+      sh -c "
+      alembic upgrade head &&
+      uvicorn main:app --reload
+      "
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:7.1
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "samofand@mail.ru"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:5050"
+    restart: unless-stopped
+    networks:
+      - twitter
 
   db:
     image: postgres:15.2
@@ -39,22 +62,27 @@ services:
       - "5432:5432"
     networks:
       - twitter
-    restart: always
+    restart: on-failure
     env_file: .env
     container_name: postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [ "CMD-SHELL", "pg_isready" ]
       interval: 1s
       timeout: 5s
       retries: 10
     volumes:
       - ./src/database/pgdata:/var/lib/postgresql/data
 
-# TODO redis, celery, EFK, Prometheus-Grafana
+
 
 volumes:
   pgdata:
+  migrations:
+  src:
 
 networks:
   twitter:
     driver: bridge
+
+
+# TODO redis, celery, EFK, Prometheus-Grafana

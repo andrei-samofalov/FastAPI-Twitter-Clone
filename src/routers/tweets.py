@@ -1,12 +1,17 @@
 """
 This module contains routes for router `tweets`
 """
+from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
+from fastapi.requests import Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update
+
+from loguru import logger
 
 from database.init_db import db
-from database.models import Tweet
+from database.models import Tweet, User, TweetLike
 from database.schemas import TweetIn, TweetOut
 from database.service import Dal
 
@@ -14,50 +19,71 @@ router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 
 
 @router.get('/')
-async def get_tweets():
+async def get_tweets(
+        sess: AsyncSession = Depends(db)
+):
     """get all tweets"""
+
+    tweets = await Dal(sess).get_all_tweets()
+    logger.debug(f'{tweets=}')
     return {
         "result": True,
-        "tweets": [
-            {
-                "id": 1,
-                "content": "string",
-                # "attachments": [
-                # ],
-                "author": {
-                    "id": 1,
-                    "name": "string"
-                },
-                "likes": [
-                    {
-                        "user_id": 1,
-                        "name": "string"
-                    }
-                ]
-            },
-        ]
+        "tweets": tweets
     }
 
 
-@router.post('/', response_model=TweetOut)
-async def add_tweet(tweet: TweetIn, sess: AsyncSession = Depends(db)):
-    """post new tweet"""
-    return await Dal(sess).add_one(Tweet, tweet)
+@router.post('/', response_model=TweetOut, status_code=201)
+async def add_tweet(
+        tweet: TweetIn,
+        api_key: Annotated[str | None, Header()] = None,
+        sess: AsyncSession = Depends(db),
+
+):
+    """Post new tweet."""
+    logger.debug(f"{tweet=}")
+    logger.debug(f"{api_key=}")
+
+    tweet_data = tweet.dict()
+
+    # stmt = select(User.id).filter_by(api_key=api_key)
+    # user_id = await sess.scalar(stmt)
+    tweet_data.update({'user_id': 1})
+
+    new_tweet = Tweet(**tweet_data)
+    sess.add(new_tweet)
+    await sess.commit()
+    # return await Dal(sess).add_one(Tweet, tweet)
+    return new_tweet
 
 
-@router.delete('/{id}')
-async def delete_tweet(id: int):
+@router.delete('/{idx}')
+async def delete_tweet(idx: int):
     """delete specific tweet"""
     pass
 
 
-@router.post('/{id}/likes')
-async def add_like_to_tweet(id: int):
+@router.post('/{idx}/likes')
+async def add_like_to_tweet(
+        idx: int,
+        api_key: Annotated[str | None, Header()] = None,
+        sess: AsyncSession = Depends(db)
+):
     """add like to tweet"""
-    pass
+
+    stmt = select(User.id).filter_by(api_key=api_key)
+    async with sess.begin():
+        user_id = await sess.scalar(stmt)
+        tweet = await sess.get(Tweet, idx)
+        new_like = TweetLike(
+            tweet_id=tweet.id,
+            user_id=user_id
+        )
+        sess.add(new_like)
+    # await sess.commit()
+    return {'result': True}
 
 
-@router.delete('/{id}/likes')
-async def remove_like_from_tweet(id: int):
+@router.delete('/{idx}/likes')
+async def remove_like_from_tweet(idx: int):
     """remove like from tweet"""
     pass

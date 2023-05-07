@@ -3,30 +3,35 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class UserIn(BaseModel):
-    name: str
-
-
-class FollowUserOut(UserIn):
+class FollowUserOut(BaseModel):
     id: int
+    name: str
 
     class Config:
         orm_mode = True
 
 
 class UserOut(FollowUserOut):
-    result: bool = True
     followers: Optional[list[FollowUserOut]] = []
     following: Optional[list[FollowUserOut]] = []
 
+    class Config:
+        orm_mode = True
+
+
+class UserResponse(FollowUserOut):
+    result: bool = True
+    user: UserOut
+
 
 class TweetIn(BaseModel):
-    tweet_data: str
-    tweet_media_ids: Optional[list[int]]
+    content: str = Field(..., alias='tweet_data')
+    tweet_media_ids: Optional[list[int]] = []
 
 
 class TweetOut(BaseModel):
-    tweet_id: int
+    result: bool = True
+    id: int = Field(...)
 
     class Config:
         orm_mode = True

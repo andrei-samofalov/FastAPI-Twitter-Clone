@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import Base, User, Tweet, TweetMedia, follow
+from database.models import Base, User, Tweet, TweetMedia, follows
 
 Model = TypeVar("Model", bound=Type[Base])
 Schema = TypeVar("Schema", bound=BaseModel)
@@ -43,9 +43,14 @@ class Dal:
             self._session.add(new_obj)
         return new_obj
 
-    async def get_all(self, model: Model):
+    async def _get_all(self, model: Model):
         """return all objects of given model"""
         async with self._session.begin():
             result = await self._session.scalars(select(model))
 
         return result.all()
+
+    async def get_all_tweets(self):
+        """Return all tweets"""
+        return await self._get_all(Tweet)
+
