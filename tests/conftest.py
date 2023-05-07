@@ -62,7 +62,11 @@ async def startup(async_session):
 
 @pytest.fixture(scope="session")
 async def async_client():
-    async with AsyncClient(app=app, base_url="http://localhost:5000") as cl:
+    async with AsyncClient(
+            app=app,
+            base_url="http://localhost:5000",
+            headers={"api_key": "test"}
+    ) as cl:
         yield cl
 
 

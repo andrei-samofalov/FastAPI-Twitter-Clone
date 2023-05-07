@@ -6,14 +6,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Header
 from fastapi.requests import Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 from loguru import logger
 
 from database.init_db import db
 from database.models import Tweet, User, TweetLike
 from database.schemas import TweetIn, TweetOut
-from database.service import Dal
+from database.service import Dal, get_current_user
 
 router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 
@@ -22,7 +22,7 @@ router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 async def get_tweets(
         sess: AsyncSession = Depends(db)
 ):
-    """get all tweets"""
+    """Get all tweets."""
 
     tweets = await Dal(sess).get_all_tweets()
     logger.debug(f'{tweets=}')
@@ -45,9 +45,8 @@ async def add_tweet(
 
     tweet_data = tweet.dict()
 
-    # stmt = select(User.id).filter_by(api_key=api_key)
-    # user_id = await sess.scalar(stmt)
-    tweet_data.update({'user_id': 1})
+    curr_user = await get_current_user(api_key, sess)
+    tweet_data.update({'user_id': curr_user.id})
 
     new_tweet = Tweet(**tweet_data)
     sess.add(new_tweet)
@@ -57,8 +56,13 @@ async def add_tweet(
 
 
 @router.delete('/{idx}')
-async def delete_tweet(idx: int):
+async def delete_tweet(
+        idx: int,
+        api_key: Annotated[str | None, Header()] = None,
+        sess: AsyncSession = Depends(db)
+):
     """delete specific tweet"""
+    # if tweet.user == api-key user
     pass
 
 
@@ -84,6 +88,20 @@ async def add_like_to_tweet(
 
 
 @router.delete('/{idx}/likes')
-async def remove_like_from_tweet(idx: int):
-    """remove like from tweet"""
-    pass
+async def remove_like_from_tweet(
+        idx: int,
+        api_key: Annotated[str | None, Header()] = None,
+        sess: AsyncSession = Depends(db)
+):
+    """Remove like from tweet."""
+
+    curr_user = await get_current_user(api_key, sess)
+    async with sess.begin():
+        curr_tweet = await sess.get(Tweet, idx)
+
+    if curr_tweet.user_id == curr_user.id:
+        stmt = delete(TweetLike).filter_by(user_id=curr_user.id)
+        async with sess.begin():
+            await sess.execute(stmt)
+
+    return {'result': True}
