@@ -6,10 +6,27 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import Base, User, Tweet, TweetMedia, follow
+from database.models import Base, User, Tweet, TweetMedia, follows
 
 Model = TypeVar("Model", bound=Type[Base])
 Schema = TypeVar("Schema", bound=BaseModel)
+
+
+async def get_current_user(api_key: str, session: AsyncSession) -> User:
+    """Return current user by api key."""
+
+    stmt = select(User).filter_by(api_key=api_key)
+    async with session.begin():
+        current_user: User = await session.scalar(stmt)
+    return current_user
+
+
+async def get_user_by_idx(idx: int, session: AsyncSession) -> User:
+    """Return user by id."""
+    stmt = select(User).filter_by(id=idx)
+    async with session.begin():
+        user: User = await session.scalar(stmt)
+    return user
 
 
 class Dal:
@@ -43,9 +60,13 @@ class Dal:
             self._session.add(new_obj)
         return new_obj
 
-    async def get_all(self, model: Model):
+    async def _get_all(self, model: Model):
         """return all objects of given model"""
         async with self._session.begin():
             result = await self._session.scalars(select(model))
 
         return result.all()
+
+    async def get_all_tweets(self):
+        """Return all tweets"""
+        return await self._get_all(Tweet)

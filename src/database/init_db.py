@@ -16,7 +16,7 @@ db_url = URL.create(
     password=os.getenv("POSTGRES_PASSWORD"),
     host="db",
     port=5432,
-    database="admin",
+    database="postgres",
 )
 
 async_engine = create_async_engine(db_url, echo=True)
