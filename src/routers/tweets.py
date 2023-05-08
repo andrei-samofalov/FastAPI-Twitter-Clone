@@ -13,7 +13,7 @@ from loguru import logger
 from database.init_db import db
 from database.models import Tweet, User, TweetLike
 from database.schemas import TweetIn, TweetOut
-from database.service import Dal, get_current_user, get_followee_tweets
+from database.service import Dal
 
 router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 
@@ -42,7 +42,7 @@ async def add_tweet(
 
     tweet_data = tweet.dict()
 
-    curr_user = await get_current_user(api_key, sess)
+    curr_user = await Dal(sess).get_current_user(api_key)
     tweet_data.update({'user_id': curr_user.id})
 
     new_tweet = Tweet(**tweet_data)
@@ -89,7 +89,7 @@ async def remove_like_from_tweet(
 ):
     """Remove like from tweet."""
 
-    curr_user = await get_current_user(api_key, sess)
+    curr_user = await Dal(sess).get_current_user(api_key)
     async with sess.begin():
         curr_tweet = await sess.get(Tweet, idx)
 
