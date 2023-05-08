@@ -5,7 +5,7 @@ version: '3.9'
 services:
   server:
     build: src/server
-    container_name: twitter-nginx
+    container_name: nginx
     restart: on-failure
     env_file: .env
     networks:
@@ -26,7 +26,7 @@ services:
       - "5000:5000"
     restart: on-failure
     env_file: .env
-    container_name: twitter-api
+    container_name: api
     networks:
       - twitter
     depends_on:
@@ -42,7 +42,7 @@ services:
       "
 
   pgadmin:
-    container_name: twitter-pgadmin
+    container_name: pgadmin
     image: dpage/pgadmin4:7.1
     environment:
       PGADMIN_DEFAULT_EMAIL: "samofand@mail.ru"
@@ -64,7 +64,7 @@ services:
       - twitter
     restart: on-failure
     env_file: .env
-    container_name: twitter-postgres
+    container_name: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 1s

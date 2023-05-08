@@ -23,6 +23,9 @@ class UserResponse(FollowUserOut):
     result: bool = True
     user: UserOut
 
+    class Config:
+        orm_mode = True
+
 
 class TweetIn(BaseModel):
     content: str = Field(..., alias='tweet_data')
