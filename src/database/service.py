@@ -9,30 +9,10 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import Base, User, Tweet, TweetMedia, UserToUser
+from exceptions.HTTPExceptions import ApiError
 
 Model = TypeVar("Model", bound=Type[Base])
 Schema = TypeVar("Schema", bound=BaseModel)
-
-
-async def get_current_user(api_key: str, session: AsyncSession) -> User:
-    """Return current user by api key."""
-
-    stmt = (
-        select(User)
-        .filter_by(api_key=api_key)
-    )
-    async with session.begin():
-        current_user: User = await session.scalar(stmt)
-
-    return current_user
-
-
-async def get_user_by_idx(idx: int, session: AsyncSession) -> User:
-    """Return user by id."""
-    stmt = select(User).filter_by(id=idx)
-    async with session.begin():
-        user: User = await session.scalar(stmt)
-    return user
 
 
 async def get_user_followers(user: User, session: AsyncSession):
@@ -48,7 +28,7 @@ async def get_user_followers(user: User, session: AsyncSession):
 async def _get_tweets(user: User, session: AsyncSession):
     """Return all tweets by following users"""
 
-    followee = await get_user_followee(user, session)
+    followee = await get_user_followers(user, session)
 
     logger.debug(f'{user.following=}')
     q = (
@@ -59,13 +39,6 @@ async def _get_tweets(user: User, session: AsyncSession):
     )
     async with session.begin():
         tweets = await session.scalars(q)
-
-    return tweets
-
-
-async def get_followee_tweets(api_key: str, session: AsyncSession):
-    user = await get_current_user(api_key, session)
-    tweets = await _get_tweets(user, session)
 
     return tweets
 
@@ -86,7 +59,12 @@ class Dal:
         async with self._session.begin():
             obj = await self._session.get(obj_type, obj_id)
         if not obj:
-            raise HTTPException(status_code=404, detail="not found")
+            class_name = obj_type.__class__.__name__
+            raise ex.ApiError(
+                status_code=404, detail="not found",
+                error_type='database',
+                error_message=f'{class_name} with id {obj_id} not found :('
+            )
 
         return obj
 
@@ -111,3 +89,20 @@ class Dal:
     async def get_all_tweets(self):
         """Return all tweets"""
         return await self._get_all(Tweet)
+
+    async def get_current_user(self, api_key: str) -> User:
+        """Return current user by api key."""
+        stmt = (
+            select(User)
+            .filter_by(api_key=api_key)
+        )
+        # TODO followers and following
+        async with self._session.begin():
+            # potential exc
+            current_user: User = await self._session.scalar(stmt)
+
+        return current_user
+
+    async def get_user_by_idx(self, idx: int):
+        """Return user by id."""
+        return await self.get_one(User, idx)
