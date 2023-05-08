@@ -13,31 +13,28 @@ from loguru import logger
 from database.init_db import db
 from database.models import Tweet, User, TweetLike
 from database.schemas import TweetIn, TweetOut
-from database.service import Dal, get_current_user
+from database.service import Dal, get_current_user, get_followee_tweets
 
 router = APIRouter(prefix='/api/tweets', tags=['tweets'])
 
 
 @router.get('/')
 async def get_tweets(
+        api_key: Annotated[str | None, Header()] = None,
         sess: AsyncSession = Depends(db)
 ):
-    """Get all tweets."""
+    """Get all tweets from current user's followee."""
 
     tweets = await Dal(sess).get_all_tweets()
     logger.debug(f'{tweets=}')
-    return {
-        "result": True,
-        "tweets": tweets
-    }
+    return {"result": True, "tweets": tweets}
 
 
 @router.post('/', response_model=TweetOut, status_code=201)
 async def add_tweet(
-        tweet: TweetIn,
-        api_key: Annotated[str | None, Header()] = None,
-        sess: AsyncSession = Depends(db),
-
+    tweet: TweetIn,
+    api_key: Annotated[str | None, Header()] = None,
+    sess: AsyncSession = Depends(db),
 ):
     """Post new tweet."""
     logger.debug(f"{tweet=}")
@@ -57,9 +54,9 @@ async def add_tweet(
 
 @router.delete('/{idx}')
 async def delete_tweet(
-        idx: int,
-        api_key: Annotated[str | None, Header()] = None,
-        sess: AsyncSession = Depends(db)
+    idx: int,
+    api_key: Annotated[str | None, Header()] = None,
+    sess: AsyncSession = Depends(db),
 ):
     """delete specific tweet"""
     # if tweet.user == api-key user
@@ -68,9 +65,9 @@ async def delete_tweet(
 
 @router.post('/{idx}/likes')
 async def add_like_to_tweet(
-        idx: int,
-        api_key: Annotated[str | None, Header()] = None,
-        sess: AsyncSession = Depends(db)
+    idx: int,
+    api_key: Annotated[str | None, Header()] = None,
+    sess: AsyncSession = Depends(db),
 ):
     """add like to tweet"""
 
@@ -78,10 +75,7 @@ async def add_like_to_tweet(
     async with sess.begin():
         user_id = await sess.scalar(stmt)
         tweet = await sess.get(Tweet, idx)
-        new_like = TweetLike(
-            tweet_id=tweet.id,
-            user_id=user_id
-        )
+        new_like = TweetLike(tweet_id=tweet.id, user_id=user_id)
         sess.add(new_like)
     # await sess.commit()
     return {'result': True}
@@ -89,9 +83,9 @@ async def add_like_to_tweet(
 
 @router.delete('/{idx}/likes')
 async def remove_like_from_tweet(
-        idx: int,
-        api_key: Annotated[str | None, Header()] = None,
-        sess: AsyncSession = Depends(db)
+    idx: int,
+    api_key: Annotated[str | None, Header()] = None,
+    sess: AsyncSession = Depends(db),
 ):
     """Remove like from tweet."""
 
