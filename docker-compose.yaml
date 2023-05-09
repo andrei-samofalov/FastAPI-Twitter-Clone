@@ -4,19 +4,19 @@ version: '3.9'
 
 services:
   server:
-    build: src/server
+    build: ./server
     container_name: twitter-nginx
     restart: on-failure
     env_file: .env
-    networks:
-      - twitter
     depends_on:
       api:
         condition: service_started
+    networks:
+      - twitter
     ports:
       - "80:5000"
     volumes:
-      - ./src/server/static:/usr/share/nginx/html/
+      - ./server/static:/usr/share/nginx/html/
 
   api:
     build:
@@ -33,28 +33,12 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./src/database/migrations:/app/database/migrations
-      - src:/app
+      - ./src:/app
     entrypoint:
       sh -c "
       alembic upgrade head &&
       uvicorn main:app --reload
       "
-
-  pgadmin:
-    container_name: twitter-pgadmin
-    image: dpage/pgadmin4:7.1
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "samofand@mail.ru"
-      PGADMIN_DEFAULT_PASSWORD: "admin"
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin
-    ports:
-      - "5050:5050"
-    restart: unless-stopped
-    networks:
-      - twitter
 
   db:
     image: postgres:15.2
@@ -71,12 +55,13 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - ./src/database/pgdata:/var/lib/postgresql/data
+      - ./src/database/pgdata:/var/lib/postgresql/data:rw
 
 volumes:
   pgdata:
   migrations:
   src:
+  pgadmin:
 
 networks:
   twitter:

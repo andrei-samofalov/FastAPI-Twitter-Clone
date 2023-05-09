@@ -60,7 +60,7 @@ class Dal:
             obj = await self._session.get(obj_type, obj_id)
         if not obj:
             class_name = obj_type.__class__.__name__
-            raise ex.ApiError(
+            raise ApiError(
                 status_code=404, detail="not found",
                 error_type='database',
                 error_message=f'{class_name} with id {obj_id} not found :('

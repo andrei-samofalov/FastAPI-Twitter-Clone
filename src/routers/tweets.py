@@ -26,7 +26,7 @@ async def get_tweets(
     """Get all tweets from current user's followee."""
 
     tweets = await Dal(sess).get_all_tweets()
-    logger.debug(f'{tweets=}')
+    # logger.debug(f'{tweets=}')
     return {"result": True, "tweets": tweets}
 
 

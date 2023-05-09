@@ -1,6 +1,24 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from fastapi.openapi import utils
+
+
+class CustomRequestValidationError(BaseModel):
+    message: str
+    type: str
+
+
+validation_schema = CustomRequestValidationError.schema()
+
+custom_validation_error_definition = dict(validation_schema)
+
+validation_schema.update({"title": "HTTPValidationError"})
+
+custom_validation_error_response_definition = dict(validation_schema)
+
+utils.validation_error_definition = custom_validation_error_definition
+utils.validation_error_response_definition = custom_validation_error_response_definition
 
 
 class FollowUserOut(BaseModel):
@@ -12,8 +30,8 @@ class FollowUserOut(BaseModel):
 
 
 class UserOut(FollowUserOut):
-    followers: Optional[list[FollowUserOut]] = []
-    following: Optional[list[FollowUserOut]] = []
+    followers: list[FollowUserOut] = []
+    following: list[FollowUserOut] = []
 
     class Config:
         orm_mode = True

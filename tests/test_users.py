@@ -2,7 +2,7 @@ import pytest
 from loguru import logger
 
 from database.models import User
-from database.service import get_current_user
+from database.service import Dal
 
 
 @pytest.mark.tweets
@@ -17,7 +17,7 @@ class TestTweets:
 
     async def test_get_current_user(self, async_session, user):
         """Test func get_current_user."""
-        curr_user = await get_current_user(user.api_key, async_session)
+        curr_user = await Dal(async_session).get_current_user(user.api_key)
         assert curr_user.api_key == 'test'
         assert curr_user.id == 1
         assert curr_user.name == 'test'
