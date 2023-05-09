@@ -79,7 +79,7 @@ async def async_session():
         await session.close()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def user():
     return User(
         id=1,
@@ -88,7 +88,7 @@ def user():
     )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def tweet():
     return TweetIn(
         tweet_data="hello world",
