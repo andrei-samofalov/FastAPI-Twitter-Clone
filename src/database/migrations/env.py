@@ -1,4 +1,5 @@
 import asyncio
+import os.path
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -30,6 +31,12 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+
+def get_url():
+    return os.environ.get('REAL_DATABASE_URL') or \
+        "postgresql+asyncpg://admin:admin@localhost/postgres"
+
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -42,7 +49,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # url = config.get_main_option("sqlalchemy.url")
+    url = get_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
