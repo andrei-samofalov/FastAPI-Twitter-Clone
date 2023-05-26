@@ -1,12 +1,10 @@
 import asyncio
-import os.path
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from alembic import context
 
 from database.models import Base
 
@@ -33,8 +31,10 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return os.environ.get('REAL_DATABASE_URL') or \
-        "postgresql+asyncpg://admin:admin@localhost/postgres"
+    from utils.settings import get_settings
+
+    s = get_settings()
+    return s.dev_db if s.debug else s.real_db
 
 
 def run_migrations_offline() -> None:
