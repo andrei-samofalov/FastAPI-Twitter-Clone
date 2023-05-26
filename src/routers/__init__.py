@@ -1,17 +1,34 @@
 from fastapi import FastAPI
-from .tweets import router as tweets
-from .users import router as users
 
-# from .media import router as media
+from routers.media import router as media
+from routers.tweets import router as tweets
+from routers.users import router as users
+from utils.logconfig import init_logger
+
+init_logger()
 
 
 def create_app() -> FastAPI:
+    """
+    Initialize a FastAPI application,
+    connect the necessary routers, dependencies, and handlers.
+    :rtype: FastAPI
+    """
     app = FastAPI(
         debug=True,
         title='Twitter clone',
     )
-    app.include_router(tweets)
-    app.include_router(users)
-    # app.include_router(media)
+    app.include_router(
+        tweets,
+        prefix="/api",
+    )
+    app.include_router(
+        users,
+        prefix="/api",
+    )
+    app.include_router(
+        media,
+        prefix="/api",
+    )
 
     return app
