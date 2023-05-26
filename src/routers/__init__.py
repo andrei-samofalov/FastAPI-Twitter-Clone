@@ -3,9 +3,6 @@ from fastapi import FastAPI
 from routers.media import router as media
 from routers.tweets import router as tweets
 from routers.users import router as users
-from utils.logconfig import init_logger
-
-init_logger()
 
 
 def create_app() -> FastAPI:

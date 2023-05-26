@@ -37,6 +37,9 @@ def get_url():
     return s.dev_db if s.debug else s.real_db
 
 
+config.set_main_option("sqlalchemy.url", get_url())
+
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
