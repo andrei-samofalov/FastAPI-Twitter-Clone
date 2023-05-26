@@ -1,8 +1,7 @@
 import pytest
 from loguru import logger
 
-from database.models import User
-from database.service import Dal
+from utils.service import Dal
 
 
 @pytest.mark.tweets
@@ -20,7 +19,7 @@ class TestTweets:
         curr_user = await Dal(async_session).get_current_user(user.api_key)
         assert curr_user.api_key == 'test'
         assert curr_user.id == 1
-        assert curr_user.name == 'test'
+        assert curr_user.username == 'test'
 
     async def test_api_endpoint_user_by_id(self, async_session, async_client):
         """Test api/users/{idx}."""
