@@ -1,59 +1,69 @@
+# whole project docker compose
+
 version: '3.9'
 
 services:
   server:
-    build: src/server
-    container_name: nginx
-    restart: always
+    build: ./server
+    container_name: twitter-nginx
+    restart: on-failure
     env_file: .env
+    depends_on:
+      api:
+        condition: service_started
     networks:
       - twitter
-    depends_on:
-      - api
     ports:
       - "80:5000"
+    working_dir: /usr/share/nginx/html/
     volumes:
-      - ./src/server/static:/usr/share/nginx/html/
+      - ./server/static/images/:/usr/share/nginx/html/images:rw
 
   api:
-
     build:
       context: .
-      dockerfile: src/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "5050:5050"
-    restart: always
+      - "5000:5000"
+    restart: on-failure
     env_file: .env
-    container_name: api
+    container_name: twitter-api
     networks:
       - twitter
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./src/database/migrations:/app/database/migrations
+      - ./src:/app
+      - ./server/static/images/:/app/media:rw
+    entrypoint:
+      sh -c "
+      alembic upgrade head &&
+      uvicorn main:app --reload
+      "
 
   db:
     image: postgres:15.2
     ports:
       - "5432:5432"
+      - "5433:5433"
     networks:
       - twitter
-    restart: always
+    restart: on-failure
     env_file: .env
-    container_name: postgres
+    container_name: twitter-postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [ "CMD-SHELL", "pg_isready" ]
       interval: 1s
       timeout: 5s
       retries: 10
     volumes:
-      - ./src/database/pgdata:/var/lib/postgresql/data
-
-# TODO redis, celery, EFK, Prometheus-Grafana
+      - ./src/database/pgdata:/var/lib/postgresql/data:rw
 
 volumes:
   pgdata:
+  src:
+  images:
 
 networks:
   twitter:

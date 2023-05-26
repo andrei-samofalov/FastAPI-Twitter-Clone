@@ -1,29 +1,20 @@
 import asyncio
+import json
 
 import pytest
-
 from httpx import AsyncClient
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from database.init_db import db
-from database.models import Base, Client, ClientParking, Parking
-from database.schemas import (
-    ClientIn,
-    ClientParkFinish,
-    ClientParkingIn,
-    ParkingIn,
-)
+from database.models import Base, Tweet, User
+from database.schemas import TweetIn
 from main import app
 
 test_engine = create_async_engine(
-    "postgresql+asyncpg://test:test@localhost:5432/test",
+    "postgresql+asyncpg://test:test@localhost:5433/test",
     echo=False,
     poolclass=NullPool,
 )
@@ -32,8 +23,7 @@ TestSession = async_sessionmaker(
 )
 Base.metadata.bind = test_engine
 
-
-sync_engine = create_engine("postgresql://test:test@localhost:5432/test")
+sync_engine = create_engine("postgresql://test:test@localhost:5433/test")
 SyncSession = sessionmaker(bind=sync_engine)
 
 
@@ -46,8 +36,6 @@ async def override_db():
 
 
 app.dependency_overrides[db] = override_db
-
-fake = Faker()
 
 
 @pytest.fixture(scope="session")
@@ -68,7 +56,11 @@ async def startup(async_session):
 
 @pytest.fixture(scope="session")
 async def async_client():
-    async with AsyncClient(app=app, base_url="http://localhost:5000") as cl:
+    async with AsyncClient(
+            app=app,
+            base_url="http://localhost:5000",
+            headers={"api_key": "test"}
+    ) as cl:
         yield cl
 
 
@@ -79,3 +71,20 @@ async def async_session():
         yield session
     finally:
         await session.close()
+
+
+@pytest.fixture(scope='module')
+def user():
+    return User(
+        id=1,
+        name='test',
+        api_key='test'
+    )
+
+
+@pytest.fixture(scope='module')
+def tweet():
+    return json.dumps(dict(
+        tweet_data="hello world",
+        tweet_media_ids=[])
+    )
