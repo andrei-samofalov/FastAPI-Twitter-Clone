@@ -1,14 +1,15 @@
 ![img.png](msc/img.png)
 
-[Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+Для запуска понадобится [установленный Docker](https://docs.docker.com/engine/install/) и логин в [докер-хабе](https://hub.docker.com/)
 
-`.env.template` --> `.env`
+Создайте файл `.env` и заполните по шаблону `.env.template` (для демонстрационного просмотра достаточно переименовать `.env.template` в `.env`)
 
+Запустите команду в терминале
 ```shell
 docker compose up
 ```
 
-root - http://0.0.0.0/ (обновление страницы через переход на этот адрес)
+root - http://0.0.0.0/ (обновление страницы через переход на этот адрес, обновление страниц на дочерних url вернет ошибку 404)
 
 swagger - http://0.0.0.0:5000/docs/
 
@@ -18,6 +19,6 @@ swagger - http://0.0.0.0:5000/docs/
 * test
 * admin
 
-Смена - в верхнем правом углу поле `api-key`
+Смена пользователей происходит вводом ключа - в верхнем правом углу поле `api-key`
 
 ![img.png](msc/img2.png)
