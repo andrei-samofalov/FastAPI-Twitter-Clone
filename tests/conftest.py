@@ -1,22 +1,16 @@
 import asyncio
-
-import pytest
 import json
 
+import pytest
 from httpx import AsyncClient
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from database.init_db import db
 from database.models import Base, Tweet, User
 from database.schemas import TweetIn
-
 from main import app
 
 test_engine = create_async_engine(
@@ -90,7 +84,7 @@ def user():
 
 @pytest.fixture(scope='module')
 def tweet():
-    return TweetIn(
+    return json.dumps(dict(
         tweet_data="hello world",
-        tweet_media_ids=[]
+        tweet_media_ids=[])
     )

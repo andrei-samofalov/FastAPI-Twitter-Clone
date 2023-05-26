@@ -1,33 +1,17 @@
-import os
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from dotenv import load_dotenv
-from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
+from utils.settings import get_db_url
+
+url = get_db_url()
+async_engine = create_async_engine(
+    url,
+    # echo=True
 )
-
-load_dotenv()
-
-db_url = URL.create(
-    drivername="postgresql+asyncpg",
-    username=os.getenv("POSTGRES_USER"),
-    password=os.getenv("POSTGRES_PASSWORD"),
-    host="db",
-    port=5432,
-    database="postgres",
-)
-
-async_engine = create_async_engine(db_url, echo=True)
 Session = async_sessionmaker(
     bind=async_engine, expire_on_commit=False, class_=AsyncSession
 )
 
 
-async def db():  # pragma: no cover
-    session: AsyncSession = Session()
-    try:
+async def db():  # noqa
+    async with Session() as session:
         yield session
-    finally:
-        await session.close()

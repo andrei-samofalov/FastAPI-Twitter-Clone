@@ -1415,7 +1415,7 @@
                 if (r.namespaced && (t._modulesNamespaceMap[c] && console.error("[vuex] duplicate namespace " + c + " for the namespaced module " + n.join("/")), t._modulesNamespaceMap[c] = r), !i && !o) {
                     var a = U(e, n.slice(0, -1)), s = n[n.length - 1];
                     t._withCommit((function () {
-                        s in a && console.warn('[vuex] state field "' + s + '" was overridden by a module with the same name at "' + n.join(".") + '"'), a[s] = r.state
+                        s in a && console.warn('[vuex] state field "' + s + '" was overridden by a module with the same username at "' + n.join(".") + '"'), a[s] = r.state
                     }))
                 }
                 var u = r.context = L(t, c, n);

@@ -1,11 +1,13 @@
-from routers import create_app
-
 import sentry_sdk
 
+from routers import create_app
+from utils.settings import USE_SENTRY, get_settings
 
-sentry_sdk.init(
-    dsn="http://abaada4710cd43079dd757b96e3df3f3@localhost:9000/4",
-    traces_sample_rate=1.0,
-)
+if USE_SENTRY:
+    s = get_settings()
+    sentry_sdk.init(
+        dsn=s.sentry_dsn,
+        traces_sample_rate=1.0,
+    )
 
 app = create_app()
