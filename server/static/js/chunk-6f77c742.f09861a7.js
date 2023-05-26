@@ -88,7 +88,7 @@
             w = {class: "profile-header"}, v = {class: "profile-actions"},
             g = {class: "profile-actions-image"}, k = ["src"],
             y = {key: 0, class: "profile-actions-edit"},
-            P = {class: "profile-info"}, C = {class: "profile-info-name"},
+            P = {class: "profile-info"}, C = {class: "profile-info-username"},
             R = {class: "profile-info-username"},
             D = {class: "profile-description"},
             I = {class: "profile-created-at"}, M = ["href"],
