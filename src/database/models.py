@@ -1,8 +1,9 @@
 """
 Модуль содержит модели базы данных
 """
+from datetime import datetime
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, Table, func, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -10,33 +11,12 @@ class Base(DeclarativeBase):
     pass
 
 
-class UserToUser(Base):
-    """
-    Таблица ассоциации юзеров для подписки
-
-    slave - тот, кто подписывается
-    master - тот, на кого подписываются
-    """
-    __tablename__ = 'user_follows'
-
-    slave_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id'), primary_key=True
-    )
-    master_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id'), primary_key=True
-    )
-
-    slave: Mapped['User'] = relationship(
-        back_populates='following',
-        foreign_keys=[slave_id],
-    )
-    master: Mapped['User'] = relationship(
-        back_populates='followers',
-        foreign_keys=[master_id],
-    )
-
-    def __repr__(self):
-        return f'{self.master} - {self.slave.info}'
+user_to_user = Table(
+    "user_follows",
+    Base.metadata,
+    Column("followers_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("following_id", Integer, ForeignKey("users.id"), primary_key=True),
+)
 
 
 class User(Base):
@@ -45,7 +25,7 @@ class User(Base):
 
     attrs:
         id - уникальный идентификатор юзера в БД, int
-        name - имя юзера, str
+        username - имя юзера, str
         api_key - идентификатор на сервисе, str (хедер `api-key` запроса)
 
     relations:
@@ -61,22 +41,26 @@ class User(Base):
     )
     name: Mapped[str] = mapped_column(nullable=False, unique=True, index=True)
     tweets: Mapped[list['Tweet']] = relationship(
-        back_populates='author', lazy='selectin', cascade='all, delete-orphan'
+        back_populates='author', cascade='all, delete-orphan'
     )
     api_key: Mapped[str] = mapped_column(unique=True, index=True)
-    followers: Mapped[list[UserToUser]] = relationship(
-        back_populates="master",
-        primaryjoin="User.id==UserToUser.master_id",
-        lazy='joined',
+    followers = relationship(
+        "User",
+        secondary=user_to_user,
+        primaryjoin=id == user_to_user.c.following_id,
+        secondaryjoin=id == user_to_user.c.followers_id,
+        back_populates="following",
     )
-    following: Mapped[list[UserToUser]] = relationship(
-        back_populates="slave",
-        primaryjoin="User.id==UserToUser.slave_id",
-        lazy='joined',
+    following = relationship(
+        "User",
+        secondary=user_to_user,
+        primaryjoin=id == user_to_user.c.followers_id,
+        secondaryjoin=id == user_to_user.c.following_id,
+        back_populates="followers",
     )
 
     def __repr__(self):
-        return f'User(id={self.id}, name={self.name})'
+        return f'User(id={self.id}, username={self.name})'
 
 
 class Tweet(Base):
@@ -90,10 +74,11 @@ class Tweet(Base):
 
     relations:
         likes - o2m связь с лайками
-        tweet_media_ids - o2m связь с медиа # TODO переделать
+        tweet_media_ids - o2m связь с медиа
         author - o2o связь с автором твита
 
     """
+
     __tablename__ = 'tweets'
 
     id: Mapped[int] = mapped_column(
@@ -101,13 +86,17 @@ class Tweet(Base):
     )
     content: Mapped[str]
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-
-    likes: Mapped[list['TweetLike']] = relationship(
-        back_populates='tweet', lazy='selectin'
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=text('CURRENT_TIMESTAMP')
     )
     tweet_media_ids: Mapped[list['TweetMedia']] = relationship()
+
+    likes: Mapped[list['TweetLike']] = relationship(
+        back_populates='tweet', lazy='selectin', cascade="all, delete-orphan"
+    )
     author: Mapped[User] = relationship(
-        back_populates='tweets', lazy='selectin'
+        back_populates='tweets',
+        lazy='selectin',
     )
 
     def __repr__(self):
@@ -118,24 +107,21 @@ class TweetMedia(Base):
     """
     Модель меда в твите
 
-    # TODO
-    Пока не ясно, как это реализовывать.
-    По идее, должен файл сохраняться на сервере nginx в отдельную папку
-    Подумать над валидацией (может быть, есть встроенная?)
-    нужно ли прописать relations?
-
     attrs:
         id - уникальный идентификатор в БД, int
         url - адрес до файла на nginx?
         tweet_id - id твита, к которому этот медиа-файл прикреплен
     """
+
     __tablename__ = 'tweet_media'
 
     id: Mapped[int] = mapped_column(
         primary_key=True, autoincrement=True, index=True
     )
     url: Mapped[str]
-    tweet_id: Mapped[int] = mapped_column(ForeignKey('tweets.id'))
+    tweet_id: Mapped[int] = mapped_column(
+        ForeignKey('tweets.id'), nullable=True
+    )
 
     def __repr__(self):
         return f'TweetMedia(tweet_id={self.tweet_id}, url={self.url}'
@@ -153,6 +139,7 @@ class TweetLike(Base):
         tweet - o2o связь с твитом
         user - o2o связь с юзером, поставившем лайк
     """
+
     __tablename__ = 'tweet_likes'
 
     tweet_id: Mapped[int] = mapped_column(
@@ -162,7 +149,9 @@ class TweetLike(Base):
         ForeignKey('users.id'), primary_key=True
     )
 
-    tweet: Mapped[Tweet] = relationship(back_populates='likes', lazy='selectin')
+    tweet: Mapped[Tweet] = relationship(
+        back_populates='likes', lazy='selectin'
+    )
     user: Mapped[User] = relationship()
 
     def __repr__(self):
