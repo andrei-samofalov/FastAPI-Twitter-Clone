@@ -15,13 +15,14 @@ services:
       - twitter
     ports:
       - "80:5000"
+    working_dir: /usr/share/nginx/html/
     volumes:
-      - ./server/static:/usr/share/nginx/html/
+      - ./server/static/images/:/usr/share/nginx/html/images:rw
 
   api:
     build:
       context: .
-      dockerfile: src/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     restart: on-failure
@@ -34,6 +35,7 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/app
+      - ./server/static/images/:/app/media:rw
     entrypoint:
       sh -c "
       alembic upgrade head &&
@@ -44,6 +46,7 @@ services:
     image: postgres:15.2
     ports:
       - "5432:5432"
+      - "5433:5433"
     networks:
       - twitter
     restart: on-failure
@@ -59,13 +62,9 @@ services:
 
 volumes:
   pgdata:
-  migrations:
   src:
-  pgadmin:
+  images:
 
 networks:
   twitter:
     driver: bridge
-
-
-# TODO redis, celery, EFK, Prometheus-Grafana

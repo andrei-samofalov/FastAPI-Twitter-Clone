@@ -17,6 +17,8 @@ python-dotenv = "^1.0.0"
 sqlalchemy = "2.0.10"
 psycopg2-binary = "^2.9.6"
 sentry-sdk = {extras = ["fastapi"], version = "^1.21.1"}
+python-multipart = "^0.0.6"
+aiofiles = "^23.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
