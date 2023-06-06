@@ -4,7 +4,7 @@ This module contains routes for router `tweets`
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -26,9 +26,13 @@ router = APIRouter(prefix='/users', tags=['users'])
     responses=RESPONSE_401,
     status_code=200,
 )
-async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
+async def get_user(
+        current_user: Annotated[User, Depends(get_current_user)],
+        api_key: Annotated[str | None, Header()]
+):
     """Получить информацию о текущем пользователе"""
     logger.debug(f'{current_user=}')
+    logger.debug(f'{api_key=}')
     return {"user": current_user}
 
 
@@ -38,7 +42,10 @@ async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
     responses=RESPONSE_401_422_404,
     status_code=200,
 )
-async def get_user_by_id(idx: int, sess: AsyncSession = Depends(db)):
+async def get_user_by_id(
+        idx: int, sess: Annotated[AsyncSession, Depends(db)],
+        api_key: Annotated[str | None, Header()]
+):
     """Get specific user details."""
     user: User = await Dal(sess).get_user_by_idx(idx)
     return {"user": user}
@@ -51,9 +58,10 @@ async def get_user_by_id(idx: int, sess: AsyncSession = Depends(db)):
     status_code=200,
 )
 async def follow_user(
-    idx: int,
-    current_user: Annotated[User, Depends(get_current_user)],
-    sess: Annotated[AsyncSession, Depends(db)],
+        idx: int,
+        current_user: Annotated[User, Depends(get_current_user)],
+        sess: Annotated[AsyncSession, Depends(db)],
+        api_key: Annotated[str | None, Header()]
 ):
     """follow specific user"""
     user_for_follow: User = await Dal(sess).get_user_by_idx(idx)
@@ -77,9 +85,10 @@ async def follow_user(
     status_code=200,
 )
 async def unfollow_user(
-    idx: int,
-    current_user: Annotated[User, Depends(get_current_user)],
-    sess: Annotated[AsyncSession, Depends(db)],
+        idx: int,
+        current_user: Annotated[User, Depends(get_current_user)],
+        sess: Annotated[AsyncSession, Depends(db)],
+        api_key: Annotated[str | None, Header()]
 ):
     """Unfollow specific user."""
     user_for_unfollow: User = await Dal(sess).get_user_by_idx(idx)

@@ -56,5 +56,20 @@ class TestUsers:
         await async_session.refresh(user_1)
         await async_session.refresh(user_2)
 
-        assert len(user_1.following) == 1
-        assert user_2 in user_1.following
+        assert user_1.following[0] == user_2
+        assert user_2.followers[0] == user_1
+
+    async def test_user_can_unfollow_another_user(
+            self, async_client, async_session, user_1, user_2
+    ):
+        response = await async_client.delete(
+            f'api/users/{user_2.id}/follow', headers={"api-key": user_1.api_key}
+        )
+
+        assert response.status_code == 200
+
+        await async_session.refresh(user_1)
+        await async_session.refresh(user_2)
+
+        assert user_2 not in user_1.following
+        assert user_1 not in user_2.followers
