@@ -26,7 +26,7 @@ TestSession = async_sessionmaker(
 )
 Base.metadata.bind = test_engine
 
-sync_engine = create_engine("postgresql://admin:admin@localhost:5434/test")
+sync_engine = create_engine("postgresql://admin:admin@localhost:5433/test")
 SyncSession = sessionmaker(bind=sync_engine)
 
 

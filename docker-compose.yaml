@@ -46,7 +46,7 @@ services:
     image: postgres:15.2
     ports:
       - "5432:5432"
-      - "5433:5433"
+      - "5433:5432"
     networks:
       - twitter
     restart: on-failure
