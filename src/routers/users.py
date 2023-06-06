@@ -24,7 +24,7 @@ router = APIRouter(prefix='/users', tags=['users'])
 
 @router.get(
     '/me',
-    # response_model=UserOut,
+    response_model=UserOut,
     responses=RESPONSE_401,
     status_code=200,
 )
@@ -65,9 +65,9 @@ async def follow_user(
             detail="Can't follow yourself",
         )
     if user_for_follow not in current_user.following:
-        async with sess.begin():
-            current_user.following.append(user_for_follow)
-            sess.add(current_user)
+        current_user.following.append(user_for_follow)
+        sess.add(current_user)
+        await sess.commit()
 
     return {'result': True}
 
@@ -86,8 +86,8 @@ async def unfollow_user(
     """Unfollow specific user."""
     user_for_unfollow: User = await Dal(sess).get_user_by_idx(idx)
     if user_for_unfollow in current_user.following:
-        async with sess.begin():
-            current_user.following.remove(user_for_unfollow)
-            sess.add(current_user)
+        current_user.following.remove(user_for_unfollow)
+        sess.add(current_user)
+        await sess.commit()
 
     return {'result': True}

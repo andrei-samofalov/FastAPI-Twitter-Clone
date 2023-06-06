@@ -1540,7 +1540,7 @@
                     while (1) switch (e.prev = e.next) {
                         case 0:
                             return e.abrupt("return", B({
-                                type: "delete",
+                                type: "post",
                                 path: "/api/users/".concat(t, "/follow")
                             }));
                         case 1:
@@ -1562,7 +1562,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "delete",
-                                path: "/api/tweets/".concat(t, "/follow")
+                                path: "/api/users/".concat(t, "/follow")
                             }));
                         case 1:
                         case"end":
