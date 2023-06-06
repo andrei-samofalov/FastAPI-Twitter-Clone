@@ -51,7 +51,8 @@ addopts = [
     '--ignore-glob=*__init__.py', '--ignore-glob=*pgdata*'
 ]
 markers = [
-    "tweets: test everything around tweets"
+    "tweets: test everything around tweets",
+    "users: test everything around users",
 ]
 
 [tool.isort]

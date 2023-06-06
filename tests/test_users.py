@@ -1,18 +1,19 @@
 import pytest
-from loguru import logger
 
 from utils.service import Dal
 
 
-@pytest.mark.tweets
+@pytest.mark.users
 class TestUsers:
-    """Test everything around tweets."""
+    """Test everything around users."""
 
     @pytest.fixture(autouse=True, scope='class')
-    async def setup(self, async_session, user_1):
+    async def setup(self, async_session, user_1, user_2):
         """Setup test: adding mock user to database."""
-        async with async_session.begin():
-            async_session.add(user_1)
+        async_session.add_all([user_1, user_2])
+        await async_session.commit()
+        yield
+        await async_session.close()
 
     async def test_get_current_user(self, async_session, user_1):
         """Test func get_current_user."""
@@ -22,7 +23,7 @@ class TestUsers:
         assert curr_user.name == 'test'
 
     async def test_api_endpoint_user_by_id(
-            self, async_session, async_client, user_1_expected
+            self, async_client, user_1_expected
     ):
         """Test api/users/{idx}."""
 
@@ -32,7 +33,7 @@ class TestUsers:
         assert response.json() == user_1_expected
 
     async def test_api_endpoint_current_user(
-            self, async_session, async_client, user_1_expected
+            self, async_client, user_1_expected
     ):
         """Test api/users/me."""
 
@@ -42,3 +43,18 @@ class TestUsers:
 
         assert response.status_code == 200
         assert response.json() == user_1_expected
+
+    async def test_user_can_follow_another_user(
+            self, async_client, async_session, user_1, user_2
+    ):
+        response = await async_client.post(
+            f'api/users/{user_2.id}/follow', headers={"api-key": user_1.api_key}
+        )
+
+        assert response.status_code == 200
+
+        await async_session.refresh(user_1)
+        await async_session.refresh(user_2)
+
+        assert len(user_1.following) == 1
+        assert user_2 in user_1.following

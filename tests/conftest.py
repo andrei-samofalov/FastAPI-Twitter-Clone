@@ -11,7 +11,6 @@ from sqlalchemy.pool import NullPool
 from database.init_db import db
 from database.models import Base, User
 from main import app
-
 from utils.settings import get_settings
 
 s = get_settings()
@@ -48,7 +47,7 @@ def event_loop(request):
     loop.close()
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="session")
 async def startup(async_session):
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -62,30 +61,27 @@ async def async_client():
     async with AsyncClient(
             app=app,
             base_url="http://localhost:5000",
-            headers={"api_key": "test"}
+            headers={"api-key": "test"}
     ) as cl:
         yield cl
 
 
 @pytest.fixture(scope="session")
 async def async_session():
-    session = TestSession()
-    try:
+    async with TestSession() as session:
         yield session
-    finally:
-        await session.close()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='class')
 def user_1():
     return User(
-        # id=1,
+        id=1,
         name='test',
         api_key='test'
     )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='class')
 def user_1_expected():
     return {
         "result": True,
@@ -93,7 +89,24 @@ def user_1_expected():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='class')
+def user_2():
+    return User(
+        id=2,
+        name='test2',
+        api_key='test2'
+    )
+
+
+@pytest.fixture(scope='class')
+def user_2_expected():
+    return {
+        "result": True,
+        "user": {"id": 1, "name": "test2", "following": [], "followers": []}
+    }
+
+
+@pytest.fixture(scope='session')
 def tweet():
     return json.dumps(dict(
         tweet_data="hello world",

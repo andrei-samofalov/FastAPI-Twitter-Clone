@@ -10,10 +10,10 @@ class TestTweets:
     """Test everything around tweets."""
 
     @pytest.fixture(autouse=True, scope='class')
-    async def setup(self, async_session, user):
+    async def setup(self, async_session, user_1):
         """Setup test: adding mock user to database."""
         async with async_session.begin():
-            async_session.add(user)
+            async_session.add(user_1)
         logger.debug('Test user added to test database')
 
     async def test_add_tweet(self, tweet, async_client, async_session):
@@ -22,7 +22,7 @@ class TestTweets:
         response = await async_client.post(
             '/api/tweets/',
             content=tweet,
-            headers={"api-key": "test"}
+            # headers={"api-key": "test"}
         )
 
         assert response.status_code == 201
