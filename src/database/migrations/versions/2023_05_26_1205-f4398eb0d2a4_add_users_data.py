@@ -8,7 +8,7 @@ Create Date: 2023-05-26 12:05:08.066533
 from datetime import datetime
 
 from alembic import op
-from sqlalchemy import Integer, String, column, table, DateTime
+from sqlalchemy import DateTime, Integer, String, column, table
 
 # revision identifiers, used by Alembic.
 revision = "f4398eb0d2a4"

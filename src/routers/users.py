@@ -13,8 +13,6 @@ from database.init_db import db
 from database.models import User
 from schemas.base_schema import BaseSchema
 from schemas.user_schema import UserOut
-
-# from database.schemas import UserOut
 from utils.authentication import get_current_user
 from utils.responses import RESPONSE_401, RESPONSE_401_422_404, RESPONSE_401_422_404_400
 from utils.service import Dal

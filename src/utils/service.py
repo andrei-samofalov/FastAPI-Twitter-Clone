@@ -108,7 +108,7 @@ class Dal:
             await self._session.commit()
 
     async def remove_like_from_tweet(
-            self, tweet_id: int, user_id: int
+        self, tweet_id: int, user_id: int
     ) -> None:
         """Удаляет лайк с твита."""
         tweet = await self._get_tweet(tweet_id)
