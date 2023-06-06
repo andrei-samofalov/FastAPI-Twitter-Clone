@@ -51,8 +51,7 @@
                 "chunk-0420bcc4": "d6bc3184",
                 "chunk-6f77c742": "8d9a3d9c"
             }[e] + ".css", i = u.p + c, a = document.getElementsByTagName("link"), o = 0; o < a.length; o++) {
-                var s = a[o],
-                    l = s.getAttribute("data-href") || s.getAttribute("href");
+                var s = a[o], l = s.getAttribute("data-href") || s.getAttribute("href");
                 if ("stylesheet" === s.rel && (l === c || l === i)) return t()
             }
             var b = document.getElementsByTagName("style");
@@ -125,8 +124,7 @@
     }, u.p = "/", u.oe = function (e) {
         throw console.error(e), e
     };
-    var s = window["webpackJsonp"] = window["webpackJsonp"] || [],
-        l = s.push.bind(s);
+    var s = window["webpackJsonp"] = window["webpackJsonp"] || [], l = s.push.bind(s);
     s.push = t, s = s.slice();
     for (var b = 0; b < s.length; b++) t(s[b]);
     var d = l;
@@ -140,24 +138,16 @@
             return r
         }));
         var c = [{
-            id: 1,
-            name: "test",
-            api_token: "test",
-            followers: [{id: 2}],
-            following: [{id: 2}]
-        }, {
-            id: 2,
-            name: "test2",
-            api_token: "test2",
-            followers: [{id: 1}],
-            following: [{id: 1}]
-        }], r = (c[0], c[1], c[0].username, c[0].password, [{
-            name: "#GoLang",
-            tweetsCount: 155614
-        }, {name: "#Python", tweetsCount: 121353}, {
-            name: "#DevConf2022",
-            tweetsCount: 90420
-        }])
+                id: 1,
+                name: "test",
+                api_token: "test",
+                followers: [{id: 2}],
+                following: [{id: 2}]
+            }, {id: 2, name: "test2", api_token: "test2", followers: [{id: 1}], following: [{id: 1}]}],
+            r = (c[0], c[1], c[0].username, c[0].password, [{
+                name: "#GoLang",
+                tweetsCount: 155614
+            }, {name: "#Python", tweetsCount: 121353}, {name: "#DevConf2022", tweetsCount: 90420}])
     }, "0a8a": function (e, t, n) {
         "use strict";
         n.r(t);
@@ -364,12 +354,10 @@
         t["default"] = u
     }, "345e": function (e, t, n) {
         "use strict";
-        var c = n("7a23"), r = {class: "add-tweet"},
-            i = {class: "add-tweet-profile"}, a = ["src"],
+        var c = n("7a23"), r = {class: "add-tweet"}, i = {class: "add-tweet-profile"}, a = ["src"],
             o = {class: "add-tweet-content"}, u = {class: "tweet-section"},
-            s = {key: 0, class: "tweet-section-images"}, l = ["src"],
-            b = ["onClick"], d = {class: "controls"},
-            p = {class: "controls-media"}, h = {class: "controls-submit"},
+            s = {key: 0, class: "tweet-section-images"}, l = ["src"], b = ["onClick"],
+            d = {class: "controls"}, p = {class: "controls-media"}, h = {class: "controls-submit"},
             f = ["disabled"];
 
         function g(e, t, n, g, m, O) {
@@ -416,11 +404,8 @@
             }, k = function e(t) {
                 Object(w["a"])(this, e), this.id = t.id, this.username = t.username, this.password = t.password, this.profile = t.profile, this.account = t.account, this.createdAt = (new Date).getTime()
             }, C = n("7424"), M = {
-                name: "AddTweet",
-                components: {BaseIcon: v["a"]},
-                setup: function (e, t) {
-                    var n = Object(c["z"])(o()), r = Object(y["d"])(),
-                        i = Object(c["m"])(),
+                name: "AddTweet", components: {BaseIcon: v["a"]}, setup: function (e, t) {
+                    var n = Object(c["z"])(o()), r = Object(y["d"])(), i = Object(c["m"])(),
                         a = i.parent.appContext.config.globalProperties.$notification;
 
                     function o() {
@@ -450,10 +435,7 @@
                                             return u.push(t.media_id)
                                         })), i.tweet_media_ids = u, e.next = 12, Object(C["m"])(i);
                                     case 12:
-                                        a({
-                                            type: "info",
-                                            message: "Твит отправлен!"
-                                        }), e.next = 18;
+                                        a({type: "info", message: "Твит отправлен!"}), e.next = 18;
                                         break;
                                     case 15:
                                         e.prev = 15, e.t0 = e["catch"](2), a({
@@ -475,8 +457,7 @@
                     }
 
                     function b(e) {
-                        var t = Object(O["a"])(e.target.files, 1), c = t[0],
-                            r = URL.createObjectURL(c);
+                        var t = Object(O["a"])(e.target.files, 1), c = t[0], r = URL.createObjectURL(c);
                         n.value.imageList.push({url: r, file: c})
                     }
 
@@ -491,8 +472,7 @@
                         showFiles: b,
                         deleteImage: d
                     }
-                },
-                computed: Object(m["a"])({}, Object(y["b"])({me: "getMe"}))
+                }, computed: Object(m["a"])({}, Object(y["b"])({me: "getMe"}))
             };
         n("b046");
         M.render = g;
@@ -545,12 +525,7 @@
         n("96cf");
 
         function i() {
-            return {
-                id: "",
-                username: "",
-                password: "",
-                profile: {pic: "", nickname: "", name: ""}
-            }
+            return {id: "", username: "", password: "", profile: {pic: "", nickname: "", name: ""}}
         }
 
         var a = n("7424"), o = {
@@ -658,12 +633,7 @@
             isPaginationEnabled: !1,
             paginationLimit: 5
         };
-        t["a"] = c["a"].createStore({
-            state: d,
-            mutations: b,
-            getters: u,
-            actions: o
-        })
+        t["a"] = c["a"].createStore({state: d, mutations: b, getters: u, actions: o})
     }, 4731: function (e, t, n) {
         "use strict";
         n.r(t);
@@ -724,10 +694,8 @@
         var c = n("7a23");
 
         function r(e, t, n, r, i, a) {
-            var o = Object(c["C"])("DebugPanel"),
-                u = Object(c["C"])("router-view"),
-                s = Object(c["C"])("loading"),
-                l = Object(c["C"])("notification");
+            var o = Object(c["C"])("DebugPanel"), u = Object(c["C"])("router-view"),
+                s = Object(c["C"])("loading"), l = Object(c["C"])("notification");
             return Object(c["u"])(), Object(c["e"])(Object(c["D"])(e.getLoginStatus ? "layout" : "div"), null, {
                 default: Object(c["J"])((function () {
                     return [Object(c["k"])(o), Object(c["k"])(u), e.getLoadingStatus ? (Object(c["u"])(), Object(c["e"])(s, {key: 0})) : Object(c["f"])("", !0), (Object(c["u"])(!0), Object(c["g"])(c["a"], null, Object(c["A"])(e.getActiveNotifications, (function (e, t) {
@@ -742,16 +710,15 @@
         }
 
         var i = n("5530"), a = (n("f5df1"), n("b0c0"), {class: "layout"}),
-            o = {class: "layout-sidebar"}, u = {class: "layout-flow"},
-            s = {class: "page-header"}, l = {key: 1, class: "profile-info"},
-            b = {key: 2}, d = {class: "layout-for-you"},
+            o = {class: "layout-sidebar"}, u = {class: "layout-flow"}, s = {class: "page-header"},
+            l = {key: 1, class: "profile-info"}, b = {key: 2}, d = {class: "layout-for-you"},
             p = {class: "layout-for-you-fixed"};
 
         function h(e, t, n, r, i, h) {
             var f = Object(c["C"])("sidebar"), g = Object(c["C"])("base-icon"),
                 m = Object(c["C"])("SearchBar"), O = Object(c["C"])("Trends"),
-                j = Object(c["C"])("tweet-popup"),
-                v = Object(c["C"])("Lightbox"), y = Object(c["C"])("BaseIcon");
+                j = Object(c["C"])("tweet-popup"), v = Object(c["C"])("Lightbox"),
+                y = Object(c["C"])("BaseIcon");
             return Object(c["u"])(), Object(c["g"])("div", a, [Object(c["h"])("div", o, [Object(c["h"])("div", {class: Object(c["q"])(["layout-sidebar-fixed-container", {active: e.getMobileMenuState}])}, [Object(c["k"])(f)], 2)]), Object(c["h"])("div", u, [Object(c["h"])("div", s, ["/" != e.$route.path ? (Object(c["u"])(), Object(c["g"])("div", {
                 key: 0,
                 class: "back-button",
@@ -770,16 +737,13 @@
         }
 
         var f = {class: "sidebar-nav"}, g = {class: "sidebar-logo"},
-            m = Object(c["j"])(" Профиль "), O = Object(c["j"])(" Еще "),
-            j = {class: "icon"}, v = Object(c["h"])("span", null, "Close", -1);
+            m = Object(c["j"])(" Профиль "), O = Object(c["j"])(" Еще "), j = {class: "icon"},
+            v = Object(c["h"])("span", null, "Close", -1);
 
         function y(e, t, n, r, i, a) {
-            var o = Object(c["C"])("base-icon"),
-                u = Object(c["C"])("router-link"),
-                s = Object(c["C"])("sidebar-item"),
-                l = Object(c["C"])("more-menu"),
-                b = Object(c["C"])("profile-popup"),
-                d = Object(c["C"])("BaseIcon");
+            var o = Object(c["C"])("base-icon"), u = Object(c["C"])("router-link"),
+                s = Object(c["C"])("sidebar-item"), l = Object(c["C"])("more-menu"),
+                b = Object(c["C"])("profile-popup"), d = Object(c["C"])("BaseIcon");
             return Object(c["u"])(), Object(c["g"])("aside", null, [Object(c["h"])("div", f, [Object(c["h"])("div", g, [Object(c["k"])(u, {to: "/"}, {
                 default: Object(c["J"])((function () {
                     return [Object(c["k"])(o, {icon: "twitter"})]
@@ -855,51 +819,33 @@
         };
         n("411d");
         z.render = C;
-        var q = z, L = [{
-                name: "Home",
-                path: "/",
-                req: !0,
-                label: "Главная"
-            }, {
+        var q = z, L = [{name: "Home", path: "/", req: !0, label: "Главная"}, {
                 name: "Explore",
                 path: "/explore",
                 label: "Обзор"
-            }, {
-                name: "Notifications",
-                path: "/notifications",
-                label: "Уведомления"
-            }, {
+            }, {name: "Notifications", path: "/notifications", label: "Уведомления"}, {
                 name: "Messages",
                 path: "/messages",
                 label: "Сообщения"
-            }, {
-                name: "Bookmarks",
-                path: "/bookmarks",
-                label: "Закладки"
-            }, {name: "Lists", path: "/lists", label: "Списки"}], S = [{
-                name: "Topics",
-                icon: "topics",
-                label: "Темы"
-            }, {
+            }, {name: "Bookmarks", path: "/bookmarks", label: "Закладки"}, {
+                name: "Lists",
+                path: "/lists",
+                label: "Списки"
+            }], S = [{name: "Topics", icon: "topics", label: "Темы"}, {
                 name: "Moments",
                 icon: "moments",
                 label: "Моменты"
-            }, {
-                name: "Help Center",
-                icon: "help",
-                label: "Помощь"
-            }, {name: "Settings & privacy", icon: "settings", label: "Настройки"}],
-            I = {class: "sidebar-profile-wrapper"},
-            P = {class: "sidebar-profile-pic"}, B = ["src"],
+            }, {name: "Help Center", icon: "help", label: "Помощь"}, {
+                name: "Settings & privacy",
+                icon: "settings",
+                label: "Настройки"
+            }], I = {class: "sidebar-profile-wrapper"}, P = {class: "sidebar-profile-pic"}, B = ["src"],
             T = {class: "sidebar-profile-items"}, A = {class: "profile-info"},
             H = {class: "nickname"}, R = {class: "more"},
-            V = {key: 0, class: "sidebar-profile-popup"},
-            _ = {class: "popup-header"}, F = {class: "sidebar-profile-pic"},
-            E = ["src"], $ = {class: "sidebar-profile-items"},
-            N = {class: "profile-info"}, K = {class: "nickname"},
-            U = {class: "more"},
-            D = Object(c["h"])("hr", {class: "popup-spacing"}, null, -1),
-            J = {class: "popup-body"},
+            V = {key: 0, class: "sidebar-profile-popup"}, _ = {class: "popup-header"},
+            F = {class: "sidebar-profile-pic"}, E = ["src"], $ = {class: "sidebar-profile-items"},
+            N = {class: "profile-info"}, K = {class: "nickname"}, U = {class: "more"},
+            D = Object(c["h"])("hr", {class: "popup-spacing"}, null, -1), J = {class: "popup-body"},
             W = Object(c["h"])("div", {class: "popup-body-item"}, [Object(c["h"])("p", null, "Добавить существующую учетную запись")], -1),
             G = Object(c["h"])("hr", {class: "popup-spacing"}, null, -1),
             Y = Object(c["j"])("Выйти из учетной записи ");
@@ -936,8 +882,7 @@
         };
         n("2031");
         Z.render = Q;
-        var ee = Z, te = {class: "more-menu"}, ne = {class: "icon"},
-            ce = {class: "content"};
+        var ee = Z, te = {class: "more-menu"}, ne = {class: "icon"}, ce = {class: "content"};
 
         function re(e, t, n, r, i, a) {
             var o = Object(c["C"])("base-icon");
@@ -950,9 +895,7 @@
         }
 
         var ie = {
-            name: "MoreMenu",
-            components: {BaseIcon: M["a"]},
-            data: function () {
+            name: "MoreMenu", components: {BaseIcon: M["a"]}, data: function () {
                 return {moreMenuItems: S}
             }
         };
@@ -960,12 +903,7 @@
         ie.render = re;
         var ae = ie, oe = {
             name: "Sidebar",
-            components: {
-                SidebarItem: q,
-                BaseIcon: M["a"],
-                MoreMenu: ae,
-                ProfilePopup: ee
-            },
+            components: {SidebarItem: q, BaseIcon: M["a"], MoreMenu: ae, ProfilePopup: ee},
             data: function () {
                 return {ROUTES: L, isMenuOpened: !1}
             },
@@ -985,10 +923,7 @@
         function pe(e, t, n, r, i, a) {
             var o = Object(c["C"])("TrendsItem");
             return Object(c["u"])(), Object(c["g"])("div", se, [Object(c["h"])("div", le, [be, i.trends ? (Object(c["u"])(), Object(c["g"])("div", de, [(Object(c["u"])(!0), Object(c["g"])(c["a"], null, Object(c["A"])(a.sortedTrends, (function (e, t) {
-                return Object(c["u"])(), Object(c["e"])(o, {
-                    key: t,
-                    data: e
-                }, null, 8, ["data"])
+                return Object(c["u"])(), Object(c["e"])(o, {key: t, data: e}, null, 8, ["data"])
             })), 128))])) : Object(c["f"])("", !0)])])
         }
 
@@ -1000,14 +935,12 @@
 
         n("d3b7"), n("25f0");
         var me = {
-            name: "TrendsItem",
-            props: {
+            name: "TrendsItem", props: {
                 data: {
                     type: Object, default: function () {
                     }
                 }
-            },
-            computed: {
+            }, computed: {
                 normalizedTweetCount: function () {
                     var e = this.data.tweetsCount.toString();
                     return e.length > 4 ? e.substring(0, e.length - 3) + "K" : e
@@ -1017,20 +950,16 @@
         n("fdec");
         me.render = ge;
         var Oe = me, je = n("0377"), ve = {
-            name: "Trends",
-            components: {TrendsItem: Oe},
-            data: function () {
+            name: "Trends", components: {TrendsItem: Oe}, data: function () {
                 return {trends: []}
-            },
-            computed: {
+            }, computed: {
                 sortedTrends: function () {
                     var e = this.trends;
                     return e.sort((function (e, t) {
                         return e.tweetsCount > t.tweetsCount ? -1 : 1
                     }), 0), e
                 }
-            },
-            mounted: function () {
+            }, mounted: function () {
                 var e = this;
                 return Object(he["a"])(regeneratorRuntime.mark((function t() {
                     return regeneratorRuntime.wrap((function (t) {
@@ -1047,8 +976,8 @@
         };
         n("417a");
         ve.render = pe;
-        var ye = ve, we = {class: "searchbar-wrapper"},
-            xe = {class: "searchbar-icon"}, ke = {class: "searchbar-input"};
+        var ye = ve, we = {class: "searchbar-wrapper"}, xe = {class: "searchbar-icon"},
+            ke = {class: "searchbar-input"};
 
         function Ce(e, t, n, r, i, a) {
             var o = Object(c["C"])("BaseIcon");
@@ -1065,12 +994,9 @@
         }
 
         var Me = {
-            name: "SearchBar",
-            components: {BaseIcon: M["a"]},
-            data: function () {
+            name: "SearchBar", components: {BaseIcon: M["a"]}, data: function () {
                 return {isFocused: !1}
-            },
-            methods: {
+            }, methods: {
                 toggleFocus: function () {
                     this.isFocused = !this.isFocused
                 }
@@ -1082,8 +1008,7 @@
             Le = {class: "tweet-popup-header"};
 
         function Se(e, t, n, r, i, a) {
-            var o = Object(c["C"])("base-icon"),
-                u = Object(c["C"])("add-tweet");
+            var o = Object(c["C"])("base-icon"), u = Object(c["C"])("add-tweet");
             return Object(c["u"])(), Object(c["g"])("div", {
                 ref: "popupWrapper",
                 class: "tweet-popup",
@@ -1278,8 +1203,7 @@
         };
         n("9ba7");
         Ze.render = Xe;
-        var et = Ze, tt = {key: 0, class: "debug-panel"},
-            nt = {class: "debug-panel__current-key"},
+        var et = Ze, tt = {key: 0, class: "debug-panel"}, nt = {class: "debug-panel__current-key"},
             ct = Object(c["h"])("label", null, "api-key текущего пользователя:", -1),
             rt = {class: "debug-panel__pagination"}, it = ["value"],
             at = Object(c["h"])("label", null, "Пагинация", -1),
@@ -1334,12 +1258,7 @@
         n("be82");
         bt.render = lt;
         var dt = bt, pt = {
-            components: {
-                Layout: Ne,
-                Loading: Ye,
-                Notification: et,
-                DebugPanel: dt
-            },
+            components: {Layout: Ne, Loading: Ye, Notification: et, DebugPanel: dt},
             data: function () {
                 return {globalNotification: !1}
             },
@@ -1347,29 +1266,19 @@
         };
         n("2d63");
         pt.render = r;
-        var ht = pt, ft = (n("3ca3"), n("ddb0"), n("6c02")), gt = n("4360"),
-            mt = [{
-                path: "/",
-                name: "Home",
-                meta: {label: "Главная"},
-                component: function () {
-                    return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-732a3e8c"), n.e("chunk-0420bcc4")]).then(n.bind(null, "bb51"))
-                }
-            }, {
-                path: "/login",
-                name: "Login",
-                beforeEnter: jt,
-                component: function () {
-                    return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-10e0d5b4")]).then(n.bind(null, "a55b"))
-                }
-            }, {
-                path: "/profile/:profileId",
-                name: "Profile",
-                component: function () {
-                    return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-732a3e8c"), n.e("chunk-6f77c742")]).then(n.bind(null, "c66d"))
-                }
-            }],
-            Ot = Object(ft["a"])({history: Object(ft["b"])("/"), routes: mt});
+        var ht = pt, ft = (n("3ca3"), n("ddb0"), n("6c02")), gt = n("4360"), mt = [{
+            path: "/", name: "Home", meta: {label: "Главная"}, component: function () {
+                return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-732a3e8c"), n.e("chunk-0420bcc4")]).then(n.bind(null, "bb51"))
+            }
+        }, {
+            path: "/login", name: "Login", beforeEnter: jt, component: function () {
+                return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-10e0d5b4")]).then(n.bind(null, "a55b"))
+            }
+        }, {
+            path: "/profile/:profileId", name: "Profile", component: function () {
+                return Promise.all([n.e("chunk-76301fe8"), n.e("chunk-732a3e8c"), n.e("chunk-6f77c742")]).then(n.bind(null, "c66d"))
+            }
+        }], Ot = Object(ft["a"])({history: Object(ft["b"])("/"), routes: mt});
 
         function jt(e, t, n) {
             var c = gt["a"].getters.getLoginStatus;
@@ -1497,10 +1406,7 @@
                 return regeneratorRuntime.wrap((function (e) {
                     while (1) switch (e.prev = e.next) {
                         case 0:
-                            return e.abrupt("return", B({
-                                type: "get",
-                                path: "/api/users/me"
-                            }));
+                            return e.abrupt("return", B({type: "get", path: "/api/users/me"}));
                         case 1:
                         case"end":
                             return e.stop()
@@ -1581,10 +1487,7 @@
                 return regeneratorRuntime.wrap((function (e) {
                     while (1) switch (e.prev = e.next) {
                         case 0:
-                            return e.abrupt("return", B({
-                                type: "get",
-                                path: "/api/tweets"
-                            }));
+                            return e.abrupt("return", B({type: "get", path: "/api/tweets"}));
                         case 1:
                         case"end":
                             return e.stop()
@@ -1666,11 +1569,7 @@
                 return regeneratorRuntime.wrap((function (e) {
                     while (1) switch (e.prev = e.next) {
                         case 0:
-                            return e.abrupt("return", B({
-                                type: "patch",
-                                path: "/tweets",
-                                body: t
-                            }));
+                            return e.abrupt("return", B({type: "patch", path: "/tweets", body: t}));
                         case 1:
                         case"end":
                             return e.stop()
@@ -1688,11 +1587,7 @@
                 return regeneratorRuntime.wrap((function (e) {
                     while (1) switch (e.prev = e.next) {
                         case 0:
-                            return e.abrupt("return", B({
-                                type: "put",
-                                path: "/me",
-                                body: t
-                            }));
+                            return e.abrupt("return", B({type: "put", path: "/me", body: t}));
                         case 1:
                         case"end":
                             return e.stop()
@@ -1857,11 +1752,7 @@
                 cx: "14.738",
                 cy: "9.458",
                 r: "1.478"
-            }), Object(c["h"])("circle", {
-                cx: "9.262",
-                cy: "9.458",
-                r: "1.478"
-            })], -1), a = [i];
+            }), Object(c["h"])("circle", {cx: "9.262", cy: "9.458", r: "1.478"})], -1), a = [i];
 
         function o(e, t) {
             return Object(c["u"])(), Object(c["g"])("svg", r, a)
@@ -2014,11 +1905,7 @@
                 cx: "14.738",
                 cy: "9.458",
                 r: "1.478"
-            }), Object(c["h"])("circle", {
-                cx: "9.262",
-                cy: "9.458",
-                r: "1.478"
-            })], -1), a = [i];
+            }), Object(c["h"])("circle", {cx: "9.262", cy: "9.458", r: "1.478"})], -1), a = [i];
 
         function o(e, t) {
             return Object(c["u"])(), Object(c["g"])("svg", r, a)
@@ -2168,19 +2055,18 @@
         "use strict";
         n.r(t);
         var c = n("7a23"), r = {
-                viewBox: "0 0 24 24",
-                "aria-hidden": "true",
-                class: "r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1hdv0qi"
-            }, i = Object(c["h"])("g", null, [Object(c["h"])("circle", {
-                cx: "5",
-                cy: "12",
-                r: "2"
-            }), Object(c["h"])("circle", {
-                cx: "12",
-                cy: "12",
-                r: "2"
-            }), Object(c["h"])("circle", {cx: "19", cy: "12", r: "2"})], -1),
-            a = [i];
+            viewBox: "0 0 24 24",
+            "aria-hidden": "true",
+            class: "r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1hdv0qi"
+        }, i = Object(c["h"])("g", null, [Object(c["h"])("circle", {
+            cx: "5",
+            cy: "12",
+            r: "2"
+        }), Object(c["h"])("circle", {
+            cx: "12",
+            cy: "12",
+            r: "2"
+        }), Object(c["h"])("circle", {cx: "19", cy: "12", r: "2"})], -1), a = [i];
 
         function o(e, t) {
             return Object(c["u"])(), Object(c["g"])("svg", r, a)
@@ -2214,15 +2100,9 @@
         n.r(t);
         var c = n("7a23"), r = {viewBox: "0 0 75 40"},
             i = Object(c["h"])("rect", {width: "75", height: "6"}, null, -1),
-            a = Object(c["h"])("rect", {
-                y: "20",
-                width: "75",
-                height: "6"
-            }, null, -1), o = Object(c["h"])("rect", {
-                y: "40",
-                width: "75",
-                height: "6"
-            }, null, -1), u = [i, a, o];
+            a = Object(c["h"])("rect", {y: "20", width: "75", height: "6"}, null, -1),
+            o = Object(c["h"])("rect", {y: "40", width: "75", height: "6"}, null, -1),
+            u = [i, a, o];
 
         function s(e, t) {
             return Object(c["u"])(), Object(c["g"])("svg", r, u)
