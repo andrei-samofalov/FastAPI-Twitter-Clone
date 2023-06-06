@@ -18,6 +18,7 @@ services:
     working_dir: /usr/share/nginx/html/
     volumes:
       - ./server/static/images/:/usr/share/nginx/html/images:rw
+      - ./server/logs/:/var/log/nginx/
 
   api:
     build:

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic import BaseSettings, Field
@@ -23,6 +24,7 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
 
+@lru_cache
 def get_settings():
     """
     Возвращает объект настроек pydantic

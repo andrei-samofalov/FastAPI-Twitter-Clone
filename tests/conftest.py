@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from database.init_db import db
-from database.models import Base, Tweet, User
+from database.models import Base, User
 from main import app
 
 from utils.settings import get_settings
