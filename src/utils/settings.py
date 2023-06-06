@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pydantic import BaseSettings, Field
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MEDIA_ROOT = './media'
 
 TESTING = False
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     class Config:  # noqa
         env_prefix = ""
         case_sensitive = False
-        # env_file = BASE_DIR / ".env"
+        env_file = BASE_DIR / ".env"
         env_file_encoding = "utf-8"
 
 
