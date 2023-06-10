@@ -41,7 +41,7 @@ class User(Base):
     )
     name: Mapped[str] = mapped_column(nullable=False, unique=True, index=True)
     tweets: Mapped[list['Tweet']] = relationship(
-        back_populates='author', cascade='all, delete-orphan'
+        back_populates='author', cascade='all, delete-orphan', lazy='selectin'
     )
     api_key: Mapped[str] = mapped_column(unique=True, index=True)
     followers = relationship(
@@ -50,6 +50,7 @@ class User(Base):
         primaryjoin=id == user_to_user.c.following_id,
         secondaryjoin=id == user_to_user.c.followers_id,
         back_populates="following",
+        lazy='selectin'
     )
     following = relationship(
         "User",
@@ -57,6 +58,7 @@ class User(Base):
         primaryjoin=id == user_to_user.c.followers_id,
         secondaryjoin=id == user_to_user.c.following_id,
         back_populates="followers",
+        lazy='selectin'
     )
 
     def __repr__(self):
@@ -89,7 +91,7 @@ class Tweet(Base):
     created_at: Mapped[datetime] = mapped_column(
         server_default=text('CURRENT_TIMESTAMP')
     )
-    tweet_media_ids: Mapped[list['TweetMedia']] = relationship()
+    tweet_media_ids: Mapped[list['TweetMedia']] = relationship(lazy='selectin')
 
     likes: Mapped[list['TweetLike']] = relationship(
         back_populates='tweet', lazy='selectin', cascade="all, delete-orphan"
@@ -152,7 +154,7 @@ class TweetLike(Base):
     tweet: Mapped[Tweet] = relationship(
         back_populates='likes', lazy='selectin'
     )
-    user: Mapped[User] = relationship()
+    user: Mapped[User] = relationship(lazy='selectin')
 
     def __repr__(self):
         return f'TweetLike(tweet_id={self.tweet_id}'

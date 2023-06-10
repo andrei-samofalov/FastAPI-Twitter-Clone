@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from database.init_db import db
-from database.models import Base, User
+from database.models import Base, User, Tweet
 from main import app
 from utils.settings import get_settings
 
@@ -111,4 +111,13 @@ def tweet():
     return json.dumps(dict(
         tweet_data="hello world",
         tweet_media_ids=[])
+    )
+
+
+@pytest.fixture(scope='class')
+def tweetDB_us1():
+    return Tweet(
+        # id=1,
+        content="test_tweet",
+        user_id=1
     )
